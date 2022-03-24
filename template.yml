@@ -1,0 +1,48 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: First time deploying with CloudFormation
+
+Parameters:
+  LambdaDefaultRole:
+    Description: Basic execution role
+    Type: String
+
+Resources:
+  ParentLambdaFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      Description: An attempt to chain 2 lambda calls (PARENT)
+      FunctionName: ParentFunction
+      Handler: index.handler
+      MemorySize: 128
+      Role: !Ref LambdaDefaultRole
+      Runtime: python3.9
+      Timeout: 5
+      Code:
+        ZipFile: |
+          def handler(event, context):
+            print('Parent:', event)
+
+            return {
+                'httpStatus': 200,
+                'body': {'some': 'data'}
+            }
+
+  ChilLambdaFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      Description: An attempt to chain 2 lambda calls (CHILD)
+      FunctionName: ChildFunction
+      Handler: index.handler
+      MemorySize: 128
+      Role: !Ref LambdaDefaultRole
+      Runtime: python3.9
+      Timeout: 5
+      Code:
+        ZipFile: |
+          def handler(event, context):
+            print('Parent:', event)
+
+            return {
+                'httpStatus': 200,
+                'body': {'some': 'data'}
+            }

@@ -1,0 +1,5 @@
+{
+    "Parameters": {
+        "LambdaDefaultRole": "arn:aws:iam::AWS_ACCOUNT_ID:role/LambdaDefaultRole"
+    }
+}
