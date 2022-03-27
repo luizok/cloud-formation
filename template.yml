@@ -20,26 +20,7 @@ Resources:
       Environment:
         Variables:
           CHILD_LAMBDA_ARN: !GetAtt ChildLambdaFunction.Arn
-      Code:
-        ZipFile: |
-          import os
-          import json
-          import boto3
-
-          def handler(event, context):
-            print('Parent:', event)
-
-            lambda_client = boto3.client('lambda')
-            lambda_client.invoke(
-              FunctionName=os.environ.get('CHILD_LAMBDA_ARN'),
-              InvocationType='Event',
-              Payload=json.dumps({'name': 'Luiz'})
-            )
-
-            return {
-                'httpStatus': 200,
-                'body': {'some': 'data'}
-            }
+      Code: ./out/parent_function.zip
 
   ChildLambdaFunction:
     Type: AWS::Lambda::Function
@@ -51,15 +32,4 @@ Resources:
       Role: !Ref LambdaDefaultRole
       Runtime: python3.9
       Timeout: 5
-      Code:
-        ZipFile: |
-          import json
-          def handler(event, context):
-            print('Child:', event)
-            print('event type:', type(event))
-            print(f'My name is {event["name"]}')
-
-            return {
-                'httpStatus': 200,
-                'body': {'some': 'data'}
-            }
+      Code: ./out/child_function.zip

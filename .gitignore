@@ -1,2 +1,3 @@
 .env
-parameters.json
+out/*
+!out/.gitkeep
