@@ -6,6 +6,10 @@ Parameters:
     Description: Basic execution role
     Type: String
 
+  IntervalInMinutes:
+    Description: Interval to execute lambda
+    Type: Number
+
 Resources:
   ParentLambdaFunction:
     Type: AWS::Lambda::Function
@@ -33,3 +37,29 @@ Resources:
       Runtime: python3.9
       Timeout: 5
       Code: ./out/child_function.zip
+  
+  TriggerFunctionEveryNMinutesRule:
+    Type: AWS::Events::Rule
+    Properties: 
+      Description: !Sub
+        - Triggers the parent function every ${Interval} minutes
+        - Interval: !Ref IntervalInMinutes
+      EventBusName: default
+      # EventPattern: Json
+      Name: everyNminutes
+      ScheduleExpression: !Sub
+        - "rate(${Interval} minutes)"
+        - Interval: !Ref IntervalInMinutes
+      State: ENABLED
+      Targets: 
+        - 
+          Arn: !GetAtt ParentLambdaFunction.Arn
+          Id: "TargetFunctionV1"
+
+  PermissionForEventsToInvokeLambda: 
+    Type: AWS::Lambda::Permission
+    Properties: 
+      FunctionName: !Ref ParentLambdaFunction
+      Action: "lambda:InvokeFunction"
+      Principal: "events.amazonaws.com"
+      SourceArn: !GetAtt TriggerFunctionEveryNMinutesRule.Arn
