@@ -9,6 +9,10 @@ Parameters:
   IntervalInMinutes:
     Description: Interval to execute lambda
     Type: Number
+    
+  BucketName:
+    Description: Name of the bucket to save the data
+    Type: String
 
 Resources:
   ParentLambdaFunction:
@@ -36,6 +40,9 @@ Resources:
       Role: !Ref LambdaDefaultRole
       Runtime: python3.9
       Timeout: 5
+      Environment:
+        Variables:
+          BUCKET_NAME: !Ref BucketName
       Code: ./out/child_function.zip
   
   TriggerFunctionEveryNMinutesRule:
@@ -63,3 +70,9 @@ Resources:
       Action: "lambda:InvokeFunction"
       Principal: "events.amazonaws.com"
       SourceArn: !GetAtt TriggerFunctionEveryNMinutesRule.Arn
+
+  StockInfoBucket:
+      Type: AWS::S3::Bucket
+      Properties: 
+        AccessControl: Private
+        BucketName: !Ref BucketName
