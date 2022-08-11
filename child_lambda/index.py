@@ -10,7 +10,7 @@ BUCKET_NAME = os.getenv('BUCKET_NAME')
 def write_file(filename):
 
     with open(f'/tmp/{filename}', 'w') as file:
-        file.write(filename[:-3])
+        file.write(filename[:-4])
 
     s3_client = boto3.resource('s3')
     bucket = s3_client.Bucket(BUCKET_NAME)
