@@ -7,9 +7,9 @@ sed -E "s/AWS_ACCOUNT_ID/$AWS_ACCOUNT_ID/g" parameters.json > out/parameters.jso
 STACK_NAME=$(basename $(pwd))
 STACK_NAME=$(echo $STACK_NAME | sed -E 's/_/-/g')
 
-cd parent_lambda/
-zip ../out/parent_function.zip -r .
-cd ..
+# cd parent_lambda/
+# zip ../out/parent_function.zip -r .
+# cd ..
 
 cd child_lambda/
 zip ../out/child_function.zip -r .

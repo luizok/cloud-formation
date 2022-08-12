@@ -15,20 +15,20 @@ Parameters:
     Type: String
 
 Resources:
-  ParentLambdaFunction:
-    Type: AWS::Lambda::Function
-    Properties:
-      Description: An attempt to chain 2 lambda calls (PARENT)
-      FunctionName: ParentFunction
-      Handler: index.handler
-      MemorySize: 128
-      Role: !Ref LambdaDefaultRole
-      Runtime: python3.9
-      Timeout: 5
-      Environment:
-        Variables:
-          CHILD_LAMBDA_ARN: !GetAtt ChildLambdaFunction.Arn
-      Code: ./out/parent_function.zip
+  # ParentLambdaFunction:
+  #   Type: AWS::Lambda::Function
+  #   Properties:
+  #     Description: An attempt to chain 2 lambda calls (PARENT)
+  #     FunctionName: ParentFunction
+  #     Handler: index.handler
+  #     MemorySize: 128
+  #     Role: !Ref LambdaDefaultRole
+  #     Runtime: python3.9
+  #     Timeout: 5
+  #     Environment:
+  #       Variables:
+  #         CHILD_LAMBDA_ARN: !GetAtt ChildLambdaFunction.Arn
+  #     Code: ./out/parent_function.zip
 
   ChildLambdaFunction:
     Type: AWS::Lambda::Function
@@ -60,13 +60,13 @@ Resources:
       State: ENABLED
       Targets: 
         - 
-          Arn: !GetAtt ParentLambdaFunction.Arn
+          Arn: !GetAtt ChildLambdaFunction.Arn
           Id: "TargetFunctionV1"
 
   PermissionForEventsToInvokeLambda: 
     Type: AWS::Lambda::Permission
     Properties: 
-      FunctionName: !Ref ParentLambdaFunction
+      FunctionName: !Ref ChildLambdaFunction
       Action: "lambda:InvokeFunction"
       Principal: "events.amazonaws.com"
       SourceArn: !GetAtt TriggerFunctionEveryNMinutesRule.Arn
